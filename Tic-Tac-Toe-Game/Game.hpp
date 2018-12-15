@@ -56,6 +56,7 @@ private:
 	int cursorX = 2;
 	int cursorY = 3;
 	int emptyFields = 9;
+	int draws = 0;
 
 	Player* turn;
 	Player player1 = {};
@@ -80,5 +81,8 @@ private:
 	void printWinner(const Player & p);
 	void printAsciiArt(const char str[ASCII_ART_HEIGHT][ASCII_ART_WIDTH]);
 	void waitUntilKeyPressed();
+	void setCursorToPrintPosition();
+	void endGame();
+	void chooseRandomStartPlayer(Player & p1, Player & p2);
 };
 

@@ -16,11 +16,10 @@ Game::~Game() {}
 
 void Game::startGame() {
 	Setup();
+	Draw();
 	while (!escape) {
 		Draw();
 		Input();
-
-		Sleep(1000 / 5);
 	}
 	exitGame();
 }
@@ -28,6 +27,7 @@ void Game::startGame() {
 void Game::Setup() {
 	Console::clearScreen();
 	initPlayers(player1, player2);
+	draws = 0;
 	clearPlayfield();
 }
 
@@ -65,28 +65,22 @@ void Game::Input() {
 		changeCursorX(Game::D);
 		break;
 	case ENTER:
-		submitPosition();
+		submitPosition();		
 		checkWin();
 		break;
 	}
 }
 
 void Game::initPlayers(Player & p1, Player & p2) {
+	p1 = {};
+	p2 = {};
+	
 	p1.symbol = 'X';
 	p2.symbol = 'O';
 	strcpy_s(p1.name, 50, "Player 1");
 	strcpy_s(p2.name, 50, "Player 2");
 
-	if (rand() % 2) {
-		p1.isHisTurn = false;
-		p2.isHisTurn = true;
-		turn = &p2;
-	}
-	else {
-		p1.isHisTurn = true;
-		p2.isHisTurn = false;
-		turn = &p1;
-	}
+	chooseRandomStartPlayer(p1, p2);
 }
 
 void Game::clearPlayfield() {
@@ -118,6 +112,8 @@ void Game::printStats() {
 	std::cout << "Wins " << player1.name << ": " << player1.wins << std::endl;
 	Console::set_cursor_position((GAME_WIDTH + 5), 5);
 	std::cout << "Wins " << player2.name << ": " << player2.wins << std::endl;
+	Console::set_cursor_position((GAME_WIDTH + 5), 6);
+	std::cout << "Draws: " << draws << std::endl;
 	Console::changeConsoleColor(Console::WHITE);
 }
 
@@ -185,40 +181,46 @@ void Game::submitPosition() {
 }
 
 void Game::checkWin() {
-	//All possible combinations to win
+	//All possible combinations that X will win
 	if (strcmp(playfield[1], "| X | X | X |") == 0 || strcmp(playfield[4], "| X | X | X |") == 0 || strcmp(playfield[7], "| X | X | X |") == 0 /*all horizontal possibilities*/ ||
 		playfield[1][2] == 'X' && playfield[4][2] == 'X' && playfield[7][2] == 'X' || playfield[1][6] == 'X' && playfield[4][6] == 'X' && playfield[7][6] == 'X' || playfield[1][10] == 'X' && playfield[4][10] == 'X' && playfield[7][10] == 'X' /*All vertical possibilities*/ ||
 		playfield[1][2] == 'X' && playfield[4][6] == 'X' && playfield[7][10] == 'X' || playfield[1][10] == 'X' && playfield[4][6] == 'X' && playfield[7][2] == 'X' /*All diagonal possibilities*/) {
 		++(player1.wins);
-		Console::clearScreen();
-		clearPlayfield();
-		emptyFields = 9;
+		endGame();		
+		player1.isHisTurn = true;
+		player2.isHisTurn = false;
+		turn = &player1;
 		printWin(player1);
 	}
+	//All possible combinations that O will win
 	if (strcmp(playfield[1], "| O | O | O |") == 0 || strcmp(playfield[4], "| O | O | O |") == 0 || strcmp(playfield[7], "| O | O | O |") == 0 /*all horizontal possibilities*/ ||
 		playfield[1][2] == 'O' && playfield[4][2] == 'O' && playfield[7][2] == 'O' || playfield[1][6] == 'O' && playfield[4][6] == 'O' && playfield[7][6] == 'O' || playfield[1][10] == 'O' && playfield[4][10] == 'O' && playfield[7][10] == 'O' /*All vertical possibilities*/ ||
 		playfield[1][2] == 'O' && playfield[4][6] == 'O' && playfield[7][10] == 'O' || playfield[1][10] == 'O' && playfield[4][6] == 'O' && playfield[7][2] == 'O' /*All diagonal possibilities*/) {
 		++(player2.wins);
-		Console::clearScreen();
-		clearPlayfield();
-		emptyFields = 9;
+		endGame();
+		player1.isHisTurn = false;
+		player2.isHisTurn = true;
+		turn = &player2;
 		printWin(player2);
 	}
+	//if drawn
 	if (!emptyFields) {
-		Console::clearScreen();
-		clearPlayfield();
-		emptyFields = 9;
+		endGame();
+		chooseRandomStartPlayer(player1, player2);
+		draws += 1;
 		printDrawn();
 	}
 }
 
 void Game::printWin(const Player & p) {
+	setCursorToPrintPosition();
 	printAsciiArt(gameover);
 	printWinner(p);
 	waitUntilKeyPressed();
 }
 
 void Game::printDrawn() {
+	setCursorToPrintPosition();
 	printAsciiArt(drawn);
 	waitUntilKeyPressed();
 }
@@ -250,7 +252,36 @@ void Game::printWinner(const Player & p) {
 void Game::waitUntilKeyPressed() {
 	std::cout << "Press any key to start another Game (ESC = return to menu) ..." << std::endl;
 
-	if ((char)_getwch() == Game::ESCAPE)
+	char choice = (char)_getwch();
+
+	if (choice == Game::ESCAPE)
 		escape = true;
+}
+
+void Game::setCursorToPrintPosition() {
+	Console::set_cursor_position(1, GAME_HEIGHT + 2);
+	std::cout << std::endl;
+}
+
+void Game::endGame() {
+	int cursorX = 2;
+	int cursorY = 3;
+	Draw();
+	clearPlayfield();
+	emptyFields = 9;
+}
+
+void Game::chooseRandomStartPlayer(Player & p1, Player & p2) {
+
+	if (rand() % 2) {
+		p1.isHisTurn = false;
+		p2.isHisTurn = true;
+		turn = &p2;
+	}
+	else {
+		p1.isHisTurn = true;
+		p2.isHisTurn = false;
+		turn = &p1;
+	}
 }
 
