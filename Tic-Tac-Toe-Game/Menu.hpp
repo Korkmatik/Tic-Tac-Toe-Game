@@ -27,14 +27,14 @@ private:
 		"ESC\tReturn to menu"
 	};
 
-#define BYE_WIDTH 20
+#define BYE_WIDTH 21
 #define BYE_HEIGHT 5
 	char bye[ASCII_ART_HEIGHT][BYE_WIDTH] = {
-	"####   #    # #####",
-	"#   #   #  #  #    ",
-	"####     ##   #### ",
-	"#   #    ##   #    ",
-	"####     ##   #####"
+	" ####   #    # #####",
+	" #   #   #  #  #    ",
+	" ####     ##   #### ",
+	" #   #    ##   #    ",
+	" ####     ##   #####"
 	};
 
 	Game game;

@@ -46,14 +46,14 @@ unsigned Menu::getUserChoice() {
 		choice = (char)_getwch();
 		std::cout << choice;
 	} while (!isValidInput(choice));
-	return (choice - '0');
+	return (choice);
 }
 
 bool Menu::isValidInput(const char & choice) {
 	bool retVal = false;
-	int input = choice - '0';
 
-	if (1 <= input && SUBMENUS >= input)
+
+	if ('1' <= choice && (SUBMENUS + '0') >= choice || choice == 27 /*if escape*/)
 		retVal = true;
 	else
 		std::cout << std::endl << "Sorry, invalid input." << std::endl;
@@ -64,20 +64,20 @@ bool Menu::isValidInput(const char & choice) {
 void Menu::validateInput(const unsigned& choice) {
 	Console::clearScreen();
 	switch (choice) {
-	case 1:
+	case '1':
 		game.startGame();
 		break;
-	case 2:
+	case '2':
 		showControls();
 		break;
-	case 3:
+	case 27: //case escape
+		/*fall-through*/
+	case '3':
 		printBye();
 		Console::quit(1000, 0);
 		break;
 	}
 }
-
-
 
 void Menu::showControls() {
 	printTitle("Controls");
@@ -92,6 +92,7 @@ void Menu::returnToMenu() {
 }
 
 void Menu::printBye() {
+	std::cout << std::endl;
 	for (int y = 0; y < BYE_HEIGHT; ++y) {
 		for (int x = 0; x < BYE_WIDTH; ++x) {
 			if (bye[y][x] == '#')
