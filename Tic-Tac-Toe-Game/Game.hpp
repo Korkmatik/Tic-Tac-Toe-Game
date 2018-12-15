@@ -13,6 +13,7 @@ public:
 	~Game();
 
 	void startGame();
+	
 
 private:
 #define GAME_WIDTH 14
@@ -29,10 +30,32 @@ private:
 		"|   |   |   |"
 	};
 
-	enum ASCII { ESCAPE = 27 };
+#define ASCII_ART_WIDTH 58
+#define ASCII_ART_HEIGHT 6
+	char gameover[ASCII_ART_HEIGHT][ASCII_ART_WIDTH] = {
+		"##### ###### ##   ## #####     ##### #      # ##### #####",
+		"#     #    # # # # # #         #   # #      # #     #   #",
+		"#     #    # #  #  # #         #   #  #    #  #     #####",
+		"#  ## ###### #     # ###       #   #  #    #  ###   ##   ",
+		"#   # #    # #     # #         #   #   #  #   #     # ## ",
+		"##### #    # #     # #####     #####    ##    ##### #   #"
+	};
 
-	bool isGameOver = false;
+	char drawn[ASCII_ART_HEIGHT][ASCII_ART_WIDTH] = {
+		"###   ##### ###### #        # ##    #",
+		"#  #  #   # #    # #        # # #   #",
+		"#   # ##### #    # #        # #  #  #",
+		"#   # ##    ###### #   ##   # #   # #",
+		"#  #  # ##  #    # #  #  #  # #    ##",
+		"###   #   # #    # ###    ### #     #"
+	};
+
+	enum ASCII { W, S, A, D, ENTER = 13, ESCAPE = 27 };
+
 	bool escape = false;
+	int cursorX = 2;
+	int cursorY = 3;
+	int emptyFields = 9;
 
 	Player* turn;
 	Player player1 = {};
@@ -41,7 +64,6 @@ private:
 	void Setup();
 	void Draw();
 	void Input();
-	void Logic();
 
 	void initPlayers(Player& p1, Player& p2);
 	void clearPlayfield();
@@ -49,6 +71,14 @@ private:
 	void drawPlayfield();
 	void printStats();
 	void exitGame();
-
+	void changeCursorY(ASCII a);
+	void changeCursorX(ASCII a);
+	void submitPosition();
+	void checkWin();
+	void printWin(const Player & p);
+	void printDrawn();
+	void printWinner(const Player & p);
+	void printAsciiArt(const char str[ASCII_ART_HEIGHT][ASCII_ART_WIDTH]);
+	void waitUntilKeyPressed();
 };
 

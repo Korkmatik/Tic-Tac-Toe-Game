@@ -1,9 +1,10 @@
 #include <iostream>
+
 #include "Menu.hpp"
 int main() {
 
-	Menu* m = new Menu();
-	m->startMenu();
+	Menu m;
+	m.startMenu();
 
 	return 0;
 }

@@ -71,7 +71,7 @@ void Menu::validateInput(const unsigned& choice) {
 		showControls();
 		break;
 	case 3:
-		std::cout << "Quitting game ..." << std::endl;
+		printBye();
 		Console::quit(1000, 0);
 		break;
 	}
@@ -89,4 +89,17 @@ void Menu::returnToMenu() {
 	std::cout << std::endl << "Press any key to return to menu ..." << std::endl;
 	_getwch();
 	Console::clearScreen();
+}
+
+void Menu::printBye() {
+	for (int y = 0; y < BYE_HEIGHT; ++y) {
+		for (int x = 0; x < BYE_WIDTH; ++x) {
+			if (bye[y][x] == '#')
+				Console::changeConsoleColor(Console::BLUE_BAKCGROUND);
+			std::cout << bye[y][x];
+			if (bye[y][x] == '#')
+				Console::changeConsoleColor(Console::WHITE);
+		}
+		std::cout << std::endl;
+	}
 }
