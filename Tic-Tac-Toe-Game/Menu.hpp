@@ -27,6 +27,16 @@ private:
 		"ESC\tReturn to menu"
 	};
 
+#define BYE_WIDTH 20
+#define BYE_HEIGHT 5
+	char bye[ASCII_ART_HEIGHT][BYE_WIDTH] = {
+	"####   #    # #####",
+	"#   #   #  #  #    ",
+	"####     ##   #### ",
+	"#   #    ##   #    ",
+	"####     ##   #####"
+	};
+
 	Game game;
 
 	void showMenu();
@@ -37,5 +47,6 @@ private:
 	void validateInput(const unsigned& choice);	
 	void showControls();
 	void returnToMenu();
+	void printBye();
 };
 
